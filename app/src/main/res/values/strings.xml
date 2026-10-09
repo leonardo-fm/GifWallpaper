@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GIF Wallpaper</string>
+    <string name="wallpaper_description">Sfondo animato con una GIF</string>
+    <string name="pick_gif">Scegli GIF</string>
+    <string name="set_wallpaper">Imposta sfondo</string>
+    <string name="gif_saved">GIF salvata</string>
+    <string name="no_gif_yet">Scegli prima una GIF</string>
+</resources>
