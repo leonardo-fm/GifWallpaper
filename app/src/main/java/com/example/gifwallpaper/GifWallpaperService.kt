@@ -1,5 +1,6 @@
 package com.example.gifwallpaper
 
+import android.content.SharedPreferences
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ImageDecoder
@@ -10,6 +11,7 @@ import android.os.Looper
 import android.service.wallpaper.WallpaperService
 import android.view.SurfaceHolder
 import java.io.File
+import kotlin.math.roundToInt
 
 class GifWallpaperService : WallpaperService() {
 
@@ -23,6 +25,7 @@ class GifWallpaperService : WallpaperService() {
 
         private val handler = Handler(Looper.getMainLooper())
         private var gif: AnimatedImageDrawable? = null
+        private var transform = GifTransform()
 
         // The drawable calls back to schedule frames; we redraw on each one.
         private val callback = object : Drawable.Callback {
@@ -35,10 +38,29 @@ class GifWallpaperService : WallpaperService() {
             }
         }
 
+        // When the user saves a new position in the app, apply it right away.
+        private val prefsListener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
+            transform = GifTransform.load(this@GifWallpaperService)
+            draw()
+        }
+
+        override fun onCreate(surfaceHolder: SurfaceHolder) {
+            super.onCreate(surfaceHolder)
+            getSharedPreferences(GifTransform.PREFS, MODE_PRIVATE)
+                .registerOnSharedPreferenceChangeListener(prefsListener)
+        }
+
+        override fun onDestroy() {
+            getSharedPreferences(GifTransform.PREFS, MODE_PRIVATE)
+                .unregisterOnSharedPreferenceChangeListener(prefsListener)
+            super.onDestroy()
+        }
+
         override fun onVisibilityChanged(visible: Boolean) {
             if (visible) {
                 // ponytail: reloads the GIF every time it becomes visible; cache it if this gets slow
                 loadGif()
+                transform = GifTransform.load(this@GifWallpaperService)
                 gif?.start()
                 draw()
             } else {
@@ -64,24 +86,14 @@ class GifWallpaperService : WallpaperService() {
             val canvas: Canvas = holder.lockCanvas() ?: return
             try {
                 canvas.drawColor(Color.BLACK)
-                gif?.let { drawCenterCrop(canvas, it) }
+                gif?.let { g ->
+                    val r = transform.layout(canvas.width, canvas.height, g.intrinsicWidth, g.intrinsicHeight)
+                    g.setBounds(r.left.roundToInt(), r.top.roundToInt(), r.right.roundToInt(), r.bottom.roundToInt())
+                    g.draw(canvas)
+                }
             } finally {
                 holder.unlockCanvasAndPost(canvas)
             }
-        }
-
-        // Scales the GIF to fill the screen and crops the overflow, centered.
-        private fun drawCenterCrop(canvas: Canvas, gif: AnimatedImageDrawable) {
-            val scale = maxOf(
-                canvas.width.toFloat() / gif.intrinsicWidth,
-                canvas.height.toFloat() / gif.intrinsicHeight
-            )
-            val w = (gif.intrinsicWidth * scale).toInt()
-            val h = (gif.intrinsicHeight * scale).toInt()
-            val left = (canvas.width - w) / 2
-            val top = (canvas.height - h) / 2
-            gif.setBounds(left, top, left + w, top + h)
-            gif.draw(canvas)
         }
     }
 }

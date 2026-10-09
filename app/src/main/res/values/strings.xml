@@ -6,4 +6,7 @@
     <string name="set_wallpaper">Imposta sfondo</string>
     <string name="gif_saved">GIF salvata</string>
     <string name="no_gif_yet">Scegli prima una GIF</string>
+    <string name="edit">Modifica</string>
+    <string name="apply">Imposta</string>
+    <string name="cancel">Annulla</string>
 </resources>

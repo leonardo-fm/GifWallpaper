@@ -5,36 +5,84 @@
     android:background="#000000">
 
     <!-- Preview of the chosen GIF, filling the screen like the wallpaper will -->
-    <ImageView
-        android:id="@+id/previewImage"
+    <com.example.gifwallpaper.GifPreviewView
+        android:id="@+id/previewView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop" />
+        android:layout_height="match_parent" />
+
+    <!-- Edit button, top right -->
+    <ImageButton
+        android:id="@+id/btnEdit"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="8dp"
+        android:background="@drawable/bg_circle_orange"
+        android:contentDescription="@string/edit"
+        android:padding="12dp"
+        android:src="@drawable/ic_edit"
+        android:tint="@color/anthracite" />
 
     <LinearLayout
+        android:id="@+id/buttonBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:id="@+id/buttonBar"
         android:orientation="vertical"
         android:padding="@dimen/screen_padding">
 
-        <Button
-            android:id="@+id/btnPick"
+        <!-- Normal mode -->
+        <LinearLayout
+            android:id="@+id/normalBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#FF9800"
-            android:textColor="#FFFFFF"
-            android:text="@string/pick_gif" />
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/btnSet"
+            <Button
+                android:id="@+id/btnPick"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#FF9800"
+                android:textColor="@color/anthracite"
+                android:text="@string/pick_gif" />
+
+            <Button
+                android:id="@+id/btnSet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#FF9800"
+                android:textColor="@color/anthracite"
+                android:text="@string/set_wallpaper" />
+
+        </LinearLayout>
+
+        <!-- Edit mode: replaces the buttons above -->
+        <LinearLayout
+            android:id="@+id/editBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="#FF9800"
-            android:textColor="#FFFFFF"
-            android:text="@string/set_wallpaper" />
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/btnApply"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#FF9800"
+                android:textColor="@color/anthracite"
+                android:text="@string/apply" />
+
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#FF9800"
+                android:textColor="@color/anthracite"
+                android:text="@string/cancel" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
